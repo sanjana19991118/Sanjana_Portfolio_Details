@@ -99,8 +99,8 @@ const data = {
       name: "Musically Yours",
       subtitle: "Android Mobile Application as a Final year Project includes both Front End and Back End",
       description: "This app uses a chat bot to interact with the user and analyze his feelings as well as his state of mind, it then provides a music playlist to elate the users' emotion along with related videos and quotes This not only addresses users with stress and depression also those users who seek change or want to feel more cheerful.",
-      // stack: ["Axios", "HTML", "CSS", "React", "Redux", "Redux-Thunk", "React-Redux"],
-      // color: "#B58A7F",
+      stack: ["Axios", "HTML", "CSS", "React", "Redux", "Redux-Thunk", "React-Redux"],
+      color: "#B58A7F",
     },
   ],
   skills: {
