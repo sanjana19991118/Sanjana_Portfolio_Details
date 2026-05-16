@@ -379,33 +379,33 @@ function Education() {
   );
 }
 
-function Contact() {
-  return (
-    <section id="contact" style={{ padding: "80px 40px", maxWidth: 960, margin: "0 auto" }}>
-      <SectionLabel>Contact</SectionLabel>
-      <FadeIn>
-        <div style={{ border: "1px solid rgba(245,158,11,0.2)", borderRadius: 20, padding: "56px 32px", textAlign: "center" as const, background: "rgba(245,158,11,0.02)", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 0%, rgba(245,158,11,0.06), transparent 60%)" }} />
-          <h2 style={{ fontFamily: SERIF, fontWeight: 900, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "white", marginBottom: 12, position: "relative" }}>
-            Let's build something great.
-          </h2>
-          <p style={{ color: "#9CA3AF", marginBottom: 32, position: "relative", fontSize: 14 }}>
-            Open to full-time roles, freelance projects, and collaborations.
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap" as const, justifyContent: "center", gap: 12, position: "relative" }}>
-            <a href={`mailto:${data.contact.email}`} style={{ padding: "12px 28px", borderRadius: 999, background: AMBER, color: BG, fontWeight: 700, fontSize: 13, textDecoration: "none", display: "inline-block" }}>
-              Send an Email
-            </a>
-            <a href={data.contact.linkedin} target="_blank" rel="noreferrer" style={{ padding: "12px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#D1D5DB", fontSize: 13, textDecoration: "none", display: "inline-block" }}>
-              Connect on LinkedIn
-            </a>
-          </div>
-          <p style={{ fontFamily: MONO, fontSize: 11, color: "#4B5563", marginTop: 24, position: "relative" }}>📞 {data.contact.phone}</p>
-        </div>
-      </FadeIn>
-    </section>
-  );
-}
+// function Contact() {
+//   return (
+//     <section id="contact" style={{ padding: "80px 40px", maxWidth: 960, margin: "0 auto" }}>
+//       <SectionLabel>Contact</SectionLabel>
+//       <FadeIn>
+//         <div style={{ border: "1px solid rgba(245,158,11,0.2)", borderRadius: 20, padding: "56px 32px", textAlign: "center" as const, background: "rgba(245,158,11,0.02)", position: "relative", overflow: "hidden" }}>
+//           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 0%, rgba(245,158,11,0.06), transparent 60%)" }} />
+//           <h2 style={{ fontFamily: SERIF, fontWeight: 900, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "white", marginBottom: 12, position: "relative" }}>
+//             Let's build something great.
+//           </h2>
+//           <p style={{ color: "#9CA3AF", marginBottom: 32, position: "relative", fontSize: 14 }}>
+//             Open to full-time roles, freelance projects, and collaborations.
+//           </p>
+//           <div style={{ display: "flex", flexWrap: "wrap" as const, justifyContent: "center", gap: 12, position: "relative" }}>
+//             <a href={`mailto:${data.contact.email}`} style={{ padding: "12px 28px", borderRadius: 999, background: AMBER, color: BG, fontWeight: 700, fontSize: 13, textDecoration: "none", display: "inline-block" }}>
+//               Send an Email
+//             </a>
+//             <a href={data.contact.linkedin} target="_blank" rel="noreferrer" style={{ padding: "12px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.15)", color: "#D1D5DB", fontSize: 13, textDecoration: "none", display: "inline-block" }}>
+//               Connect on LinkedIn
+//             </a>
+//           </div>
+//           <p style={{ fontFamily: MONO, fontSize: 11, color: "#4B5563", marginTop: 24, position: "relative" }}>📞 {data.contact.phone}</p>
+//         </div>
+//       </FadeIn>
+//     </section>
+//   );
+// }
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -481,7 +481,7 @@ export default function App() {
         <Projects />
         <Skills />
         <Education />
-        <Contact />
+        {/* <Contact /> */}
       </main>
 
       <footer style={{ textAlign: "center", padding: "24px", fontSize: 11, fontFamily: MONO, color: "#374151", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
