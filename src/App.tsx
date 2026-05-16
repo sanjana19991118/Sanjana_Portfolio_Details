@@ -93,7 +93,7 @@ const data = {
       subtitle: "Cafe Order Management Application lists set of food items in a cafe.",
       description: "An admin on searching gets a list of all the items that can be ordered, he can place an order by clicking on the order in the order list. Thereafter Admin is also notified if the item ordered is completed. Application list the items that fall under the category of food and drink separately",
       stack: ["Axios", "HTML", "CSS", "React", "Redux", "Redux-Thunk", "React-Redux"],
-      color: "#B58A7F",
+      color: "#A67FB5",
     },
     {
       name: "Musically Yours",
@@ -101,6 +101,13 @@ const data = {
       description: "This app uses a chat bot to interact with the user and analyze his feelings as well as his state of mind, it then provides a music playlist to elate the users' emotion along with related videos and quotes This not only addresses users with stress and depression also those users who seek change or want to feel more cheerful.",
       stack: ["Axios", "HTML", "CSS", "React", "Redux", "Redux-Thunk", "React-Redux"],
       color: "#B58A7F",
+    },
+    {
+      name: "Team Communication platform",
+      subtitle: "Real-time messaging using WebSockets via SignalR",
+      description: "A full-stack team communication platform featuring workspaces, channels, threaded messaging, presence indicators, and file sharing — built with React and ASP.NET Core SignalR",
+      stack: ["Frontend — React + SignalR client + Tailwind", "Backend — ASP.NET Core + SignalR hubs", "Database — PostgreSQL with EF Core", " Real-time layer — Redis pub/sub as the SignalR backplane",],
+      color: "#7FB5A0",
     },
   ],
   skills: {
