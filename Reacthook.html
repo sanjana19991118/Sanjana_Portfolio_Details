@@ -1,0 +1,381 @@
+import { useState } from "react";
+
+const slides = [
+  {
+    id: 1,
+    tag: "THE HOOK",
+    headline: "What nobody tells you about useImperativeHandle",
+    sub: "I read every major article. Here are 6 things missing from all of them — including why React 19 just changed the rules.",
+    code: null,
+    accent: "#00e5ff",
+  },
+  {
+    id: 2,
+    tag: "WHAT IT DOES",
+    headline: "It lets a parent call methods on a child — on demand.",
+    sub: "Instead of exposing the raw DOM node, you decide exactly what the parent can touch.",
+    code: `// React 19 — no forwardRef needed for custom APIs
+function FancyInput({ ref }) {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current.focus(),
+    clear: () => (inputRef.cur…
+[06:36, 5/17/2026] sanjana V: This is a niche hook. Most projects won't need it. But if you ever do — these are the things I wish someone had told me.
+[06:43, 5/17/2026] sanjana V: import { useState } from "react";
+
+const slides = [
+  {
+    id: 1,
+    tag: "THE HOOK",
+    headline: "What nobody tells you about useImperativeHandle",
+    sub: "I read every major article. Here are 6 things missing from all of them — including why React 19 just changed the rules.",
+    code: null,
+    accent: "#00e5ff",
+  },
+  {
+    id: 2,
+    tag: "WHAT IT DOES",
+    headline: "It lets a parent call methods on a child — on demand.",
+    sub: "Instead of exposing the raw DOM node, you decide exactly what the parent can touch.",
+    code: `// React 19 — no forwardRef needed for custom APIs
+function FancyInput({ ref }) {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current.focus(),
+    clear: () => (inputRef.current.value = ""),
+  }));
+
+  return <input ref={inputRef} />;
+}
+
+// Parent calls it like this:
+inputRef.current.focus();
+inputRef.current.clear();`,
+    accent: "#00e5ff",
+  },
+  {
+    id: 3,
+    tag: "GAP #1 — REACT 19",
+    headline: "forwardRef is being deprecated. Most articles don't know yet.",
+    sub: "In React 19, ref is a regular prop. But useImperativeHandle still needs forwardRef for custom APIs in older codebases. Nobody is explaining this split clearly.",
+    code: `// React 18 — forwardRef required
+const Input = forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({ focus }));
+  return <input />;
+});
+
+// React 19 — ref is just a prop now
+function Input({ ref }) {
+  useImperativeHandle(ref, () => ({ focus }));
+  return <input />;
+}`,
+    accent: "#f59e0b",
+  },
+  {
+    id: 4,
+    tag: "GAP #2 — STALE CLOSURES",
+    headline: "Empty dependency array = silent bug. Nobody warns about this.",
+    sub: "If your exposed method uses state or props but deps is [], it always sees the initial value. It's the hardest bug to trace.",
+    code: `// ❌ BUG — stale closure, always sees initial formData
+useImperativeHandle(ref, () => ({
+  submit: () => handleSubmit(formData),
+}), []); // formData never updates here!
+
+// ✅ CORRECT — re-runs when formData changes
+useImperativeHandle(ref, () => ({
+  submit: () => handleSubmit(formData),
+}), [formData]);`,
+    accent: "#ef4444",
+  },
+  {
+    id: 5,
+    tag: "GAP #3 — TESTING",
+    headline: "Testing components with this hook is genuinely painful.",
+    sub: "To test a child method, you must mock useRef — which then breaks the parent's ref handle. Zero articles address this real-world problem.",
+    code: `// The problem:
+const ref = React.createRef();
+render(<Page ref={ref} />);
+ref.current.showDialog(); // works
+
+// But to test if child's method was called,
+// mocking useRef breaks ref.current on Page itself.
+// You need getter-based exposure as a workaround:
+useImperativeHandle(ref, () => ({
+  get dialog() { return dialogRef.current; }
+}));`,
+    accent: "#a855f7",
+  },
+  {
+    id: 6,
+    tag: "GAP #4 — PHILOSOPHY",
+    headline: "React itself calls this an escape hatch. Not a pattern.",
+    sub: "The official docs say 'imperative code using refs should be avoided in most cases' — yet this is a built-in hook. The tension is real and almost never discussed honestly.",
+    code: `// React's own docs say:
+// "If you can express something as a prop,
+//  you should NOT use a ref."
+
+// ❌ Wrong use — avoid lifting state lazily
+useImperativeHandle(ref, () => ({
+  setTitle: (t) => setTitle(t), // just pass as prop!
+}));
+
+// ✅ Right use — truly imperative action
+useImperativeHandle(ref, () => ({
+  focus: () => inputRef.current.focus(),
+}));`,
+    accent: "#22c55e",
+  },
+  {
+    id: 7,
+    tag: "GAP #5 — REF CLEANUP",
+    headline: "React 19 adds cleanup functions to refs. Nobody covers this.",
+    sub: "You can now return a cleanup from useImperativeHandle for proper teardown — unsubscribing listeners, clearing timers. Completely undiscussed.",
+    code: `// React 19 — cleanup on unmount
+function Player({ ref }) {
+  useImperativeHandle(ref, () => {
+    const handler = () => console.log("key pressed");
+    window.addEventListener("keydown", handler);
+
+    // cleanup runs when component unmounts
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  });
+  return <video />;
+}`,
+    accent: "#00e5ff",
+  },
+  {
+    id: 8,
+    tag: "GAP #6 — HONEST VERDICT",
+    headline: "More drawbacks than benefits. And that's fine to say.",
+    sub: "3 real benefits. 6 real drawbacks. It's a tool for a specific job — not a pattern to adopt widely. Knowing when NOT to use it is the senior developer skill.",
+    code: null,
+    pros: [
+      "Clean encapsulation of imperative actions",
+      "Essential for component library authors",
+      "Bridges React with non-React APIs (canvas, video)",
+    ],
+    cons: [
+      "Fights React's declarative model",
+      "Stale closure bugs (silent, hard to find)",
+      "Unit testing becomes complex",
+      "Easy to abuse instead of lifting state",
+      "Couples parent tightly to child internals",
+      "React 19 is reshaping ref patterns already",
+    ],
+    accent: "#f59e0b",
+  },
+];
+
+export default function Card() {
+  const [current, setCurrent] = useState(0);
+  const slide = slides[current];
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "#080c14",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "2rem 1rem",
+      fontFamily: "'Courier New', monospace",
+    }}>
+      {/* Slide counter */}
+      <div style={{
+        display: "flex", gap: "6px", marginBottom: "1.5rem",
+      }}>
+        {slides.map((s, i) => (
+          <div key={i} onClick={() => setCurrent(i)} style={{
+            width: i === current ? 28 : 8,
+            height: 8,
+            borderRadius: 4,
+            background: i === current ? slide.accent : "#1e2a3a",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }} />
+        ))}
+      </div>
+
+      {/* Main card */}
+      <div style={{
+        width: "100%",
+        maxWidth: 680,
+        background: "linear-gradient(145deg, #0d1520, #111d2e)",
+        border: 1px solid ${slide.accent}22,
+        borderRadius: 20,
+        overflow: "hidden",
+        boxShadow: 0 0 60px ${slide.accent}18, 0 30px 60px #00000080,
+        transition: "box-shadow 0.4s",
+      }}>
+        {/* Top bar */}
+        <div style={{
+          background: linear-gradient(90deg, ${slide.accent}18, transparent),
+          borderBottom: 1px solid ${slide.accent}33,
+          padding: "0.75rem 1.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <div style={{ display: "flex", gap: 6 }}>
+            {["#ef4444", "#f59e0b", "#22c55e"].map(c => (
+              <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />
+            ))}
+          </div>
+          <span style={{
+            color: slide.accent,
+            fontSize: "0.7rem",
+            fontWeight: 700,
+            letterSpacing: "3px",
+          }}>{slide.tag}</span>
+          <span style={{ color: "#334155", fontSize: "0.7rem" }}>{current + 1}/{slides.length}</span>
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: "2rem 2rem 1.5rem" }}>
+          <h2 style={{
+            color: "#f1f5f9",
+            fontSize: "1.25rem",
+            fontWeight: 800,
+            lineHeight: 1.35,
+            margin: "0 0 0.85rem",
+            fontFamily: "'Georgia', serif",
+          }}>{slide.headline}</h2>
+
+          <p style={{
+            color: "#64748b",
+            fontSize: "0.85rem",
+            lineHeight: 1.7,
+            margin: "0 0 1.25rem",
+            fontFamily: "'Georgia', serif",
+          }}>{slide.sub}</p>
+
+          {/* Code block */}
+          {slide.code && (
+            <div style={{
+              background: "#060a10",
+              border: 1px solid ${slide.accent}22,
+              borderRadius: 12,
+              padding: "1.25rem 1.5rem",
+              overflowX: "auto",
+            }}>
+              <pre style={{
+                margin: 0,
+                fontSize: "0.75rem",
+                lineHeight: 1.75,
+                color: "#94a3b8",
+                whiteSpace: "pre",
+              }}>
+                {slide.code.split("\n").map((line, i) => {
+                  let color = "#94a3b8";
+                  if (line.trim().startsWith("//")) color = "#475569";
+                  else if (line.includes("useImperativeHandle")) color = slide.accent;
+                  else if (line.includes("❌")) color = "#ef4444";
+                  else if (line.includes("✅")) color = "#22c55e";
+                  else if (line.includes("function") || line.includes("const") || line.includes("return")) color = "#c084fc";
+                  else if (line.includes("=>") || line.includes("ref") || line.includes("forwardRef")) color = "#60a5fa";
+                  return <span key={i} style={{ color, display: "block" }}>{line}</span>;
+                })}
+              </pre>
+            </div>
+          )}
+
+          {/* Pros/Cons for last slide */}
+          {slide.pros && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div style={{
+                background: "#0a1a0a",
+                border: "1px solid #22c55e33",
+                borderRadius: 10,
+                padding: "1rem",
+              }}>
+                <div style={{ color: "#22c55e", fontSize: "0.7rem", fontWeight: 700, letterSpacing: 2, marginBottom: "0.75rem" }}>✅ PLUS POINTS</div>
+                {slide.pros.map((p, i) => (
+                  <div key={i} style={{ color: "#86efac", fontSize: "0.78rem", marginBottom: "0.5rem", lineHeight: 1.5 }}>
+                    → {p}
+                  </div>
+                ))}
+              </div>
+              <div style={{
+                background: "#1a0a0a",
+                border: "1px solid #ef444433",
+                borderRadius: 10,
+                padding: "1rem",
+              }}>
+                <div style={{ color: "#ef4444", fontSize: "0.7rem", fontWeight: 700, letterSpacing: 2, marginBottom: "0.75rem" }}>❌ DRAWBACKS</div>
+                {slide.cons.map((c, i) => (
+                  <div key={i} style={{ color: "#fca5a5", fontSize: "0.78rem", marginBottom: "0.5rem", lineHeight: 1.5 }}>
+                    → {c}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer nav */}
+        <div style={{
+          borderTop: 1px solid #1e2a3a,
+          padding: "1rem 2rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <button onClick={() => setCurrent(Math.max(0, current - 1))}
+            disabled={current === 0}
+            style={{
+              background: "transparent",
+              border: 1px solid ${current === 0 ? "#1e2a3a" : slide.accent + "55"},
+              color: current === 0 ? "#1e2a3a" : slide.accent,
+              padding: "0.4rem 1.2rem",
+              borderRadius: 8,
+              cursor: current === 0 ? "default" : "pointer",
+              fontSize: "0.8rem",
+              fontFamily: "monospace",
+            }}>← prev</button>
+
+          <span style={{ color: "#1e3a4a", fontSize: "0.7rem" }}>
+            #ReactJS #useImperativeHandle
+          </span>
+
+          <button onClick={() => setCurrent(Math.min(slides.length - 1, current + 1))}
+            disabled={current === slides.length - 1}
+            style={{
+              background: current === slides.length - 1 ? "transparent" : slide.accent,
+              border: 1px solid ${current === slides.length - 1 ? "#1e2a3a" : slide.accent},
+              color: current === slides.length - 1 ? "#1e2a3a" : "#080c14",
+              padding: "0.4rem 1.2rem",
+              borderRadius: 8,
+              cursor: current === slides.length - 1 ? "default" : "pointer",
+              fontSize: "0.8rem",
+              fontFamily: "monospace",
+              fontWeight: 700,
+            }}>next →</button>
+        </div>
+      </div>
+
+      {/* Slide title list below */}
+      <div style={{ marginTop: "1.5rem", maxWidth: 680, width: "100%" }}>
+        <div style={{ color: "#1e3a4a", fontSize: "0.7rem", letterSpacing: 2, marginBottom: "0.75rem" }}>ALL SLIDES</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+          {slides.map((s, i) => (
+            <div key={i} onClick={() => setCurrent(i)} style={{
+              background: i === current ? slide.accent + "22" : "transparent",
+              border: 1px solid ${i === current ? slide.accent + "55" : "#1e2a3a"},
+              color: i === current ? slide.accent : "#334155",
+              padding: "0.3rem 0.75rem",
+              borderRadius: 6,
+              fontSize: "0.7rem",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}>{s.tag}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
