@@ -1,0 +1,12 @@
+/* ... your existing styles ... */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  /* Target the button tag and your specific selector class */
+  button, .allSlidesSelector {
+    display: none !important;
+  }
+}
